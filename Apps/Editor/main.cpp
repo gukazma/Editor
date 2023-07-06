@@ -4,6 +4,7 @@
 #include <QSplashScreen>
 #include <QFile>
 #include <Widgets/MainWindow.h>
+#include <QSurfaceFormat>
 
 int main(int argc, char* argv[])
 {
@@ -19,7 +20,11 @@ int main(int argc, char* argv[])
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     qApp->setStyleSheet(styleSheet);
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
 
+
+    QSurfaceFormat::setDefaultFormat(format);
     MainWindow* mainwindow = new MainWindow();
     mainwindow->showMaximized();
 

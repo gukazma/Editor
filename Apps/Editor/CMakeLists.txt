@@ -14,7 +14,6 @@ find_package(Qt5 COMPONENTS
         REQUIRED)
 
 
-find_package(OpenSceneGraph 2.0.0 REQUIRED osgViewer osgDB osgUtil osgQt5 osgGA)
 find_package(Boost COMPONENTS filesystem system thread REQUIRED)
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR})
