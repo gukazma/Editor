@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Smart3D Editor</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNewProject"/>
+    <addaction name="actionOpenProject"/>
+    <addaction name="actionSaveProject"/>
+    <addaction name="separator"/>
+    <addaction name="actionImportMesh"/>
+    <addaction name="actionExportMesh"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionSelectFace"/>
+    <addaction name="actionDeleteFace"/>
+    <addaction name="actionFillHole"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionSelectFace"/>
+   <addaction name="actionDeleteFace"/>
+   <addaction name="actionFillHole"/>
+  </widget>
+  <action name="actionOpenProject">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/openproject.png</normaloff>:/Icons/openproject.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open project</string>
+   </property>
+  </action>
+  <action name="actionSaveProject">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/saveproject.png</normaloff>:/Icons/saveproject.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save project</string>
+   </property>
+  </action>
+  <action name="actionNewProject">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/newproject.png</normaloff>:/Icons/newproject.png</iconset>
+   </property>
+   <property name="text">
+    <string>New project</string>
+   </property>
+  </action>
+  <action name="actionImportMesh">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/import.png</normaloff>:/Icons/import.png</iconset>
+   </property>
+   <property name="text">
+    <string>Import mesh</string>
+   </property>
+  </action>
+  <action name="actionExportMesh">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/export.png</normaloff>:/Icons/export.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export mesh</string>
+   </property>
+  </action>
+  <action name="actionSelectFace">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/selectface.png</normaloff>:/Icons/selectface.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select face</string>
+   </property>
+  </action>
+  <action name="actionDeleteFace">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/delete.png</normaloff>:/Icons/delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete face</string>
+   </property>
+  </action>
+  <action name="actionFillHole">
+   <property name="icon">
+    <iconset resource="../Resources/resources.qrc">
+     <normaloff>:/Icons/fillhole.png</normaloff>:/Icons/fillhole.png</iconset>
+   </property>
+   <property name="text">
+    <string>Fill hole</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../Resources/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

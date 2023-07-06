@@ -1,0 +1,17 @@
+<RCC>
+  <qresource prefix="/">
+    <file>Icons/fillhole.png</file>
+    <file>Icons/delete.png</file>
+    <file>Icons/import.png</file>
+    <file>Icons/selectface.png</file>
+    <file>Icons/export.png</file>
+    <file>Icons/openproject.png</file>
+    <file>Icons/newproject.png</file>
+    <file>Icons/saveproject.png</file>
+    <file>Icons/model.png</file>
+    <file>Icons/scale.png</file>
+    <file>Translations/zh_CN.qm</file>
+    <file>style.qss</file>
+    <file>Images/splashScreen.png</file>
+  </qresource>
+</RCC>
