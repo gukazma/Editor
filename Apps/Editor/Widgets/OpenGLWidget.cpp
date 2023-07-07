@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QTime>
 #include <QtMath>
-
+#include "Scene/SceneManager.h"
 OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
     , cube(0)
@@ -68,9 +68,9 @@ void OpenGLWidget::initializeGL()
     initShaders();
     initTextures();
 
-    //	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
     cube = new Cube;
 
@@ -111,7 +111,7 @@ void OpenGLWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 100.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -121,20 +121,22 @@ void OpenGLWidget::resizeGL(int w, int h)
 
 void OpenGLWidget::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-    //	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     texture->bind();
 
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(0.0, 0.0, -1.0);
     matrix.rotate(rotation);
 
     program.setUniformValue("mvp_matrix", projection * matrix);
 
     program.setUniformValue("texture", 0);
 
-    cube->drawCube(&program);
+    //cube->drawCube(&program);
+    for (auto&& mesh : g_sceneManager.m_meshs) {
+        mesh.draw(&program);
+    }
 
     calcFPS();
     paintFPS();

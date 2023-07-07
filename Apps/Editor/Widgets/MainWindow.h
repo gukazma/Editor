@@ -16,6 +16,12 @@ public:
     ~MainWindow();
 
 private:
+    void initConnect();
+
+private slots:
+    void on_actionImportMesh_triggered();
+
+private:
     Ui::MainWindow *ui;
 };
 

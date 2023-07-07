@@ -15,6 +15,7 @@ find_package(Qt5 COMPONENTS
 
 
 find_package(Boost COMPONENTS filesystem system thread REQUIRED)
+find_package(CGAL REQUIRED HINTS "D:/ThirdParty/CGAL-5.5.2")
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR})
 set(QRC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Resources/resources.qrc)
@@ -44,6 +45,7 @@ Boost::system
 Boost::filesystem
 Boost::dynamic_linking
 Boost::thread
+CGAL::CGAL
 )
 
 target_include_directories(
