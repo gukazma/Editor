@@ -72,8 +72,6 @@ void OpenGLWidget::initializeGL()
 
     //glEnable(GL_CULL_FACE);
 
-    cube = new Cube;
-
     startTimer(12);
     //	timer.start(12, this);
 }
@@ -133,7 +131,6 @@ void OpenGLWidget::paintGL()
 
     program.setUniformValue("texture", 0);
 
-    //cube->drawCube(&program);
     for (auto&& mesh : g_sceneManager.m_meshs) {
         mesh.draw(&program);
     }

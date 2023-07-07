@@ -1,8 +1,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "cube.h"
-
 #include <QBasicTimer>
 #include <QMatrix4x4>
 #include <QOpenGLFunctions>
