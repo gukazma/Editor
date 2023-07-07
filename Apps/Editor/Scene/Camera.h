@@ -10,6 +10,7 @@ public:
     ~Camera();
     void bind(QOpenGLShaderProgram* program);
     void resize(qreal w, qreal h);
+    void rotate(const QQuaternion& rotate);
 
 private:
     QVector3D  m_focalPoint    = {0, 0, 0};

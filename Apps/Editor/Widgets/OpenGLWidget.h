@@ -29,7 +29,6 @@ protected:
     void resizeGL(int w, int h) Q_DECL_OVERRIDE;
 
     void initShaders();
-    void initTextures();
 
 private:
     void calcFPS();
@@ -39,11 +38,6 @@ private:
 private:
     QBasicTimer          timer;
     QOpenGLShaderProgram program;
-    Cube*                cube;
-
-    QOpenGLTexture* texture;
-
-    QMatrix4x4 projection;
 
     QVector2D   mousePressPosition;
     QVector3D   rotationAxis;

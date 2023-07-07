@@ -8,8 +8,6 @@
 #include "Scene/Camera.h"
 OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
-    , cube(0)
-    , texture(0)
     , angularSpeed(0)
 {
     fps = 60.0;
@@ -17,8 +15,6 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
 OpenGLWidget::~OpenGLWidget()
 {
     makeCurrent();
-    delete texture;
-    delete cube;
     doneCurrent();
 }
 void OpenGLWidget::mousePressEvent(QMouseEvent* e)
@@ -56,6 +52,7 @@ void OpenGLWidget::timerEvent(QTimerEvent*)
     else {
         // Update rotation
         rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
+        g_camera.rotate(rotation);
         // Request an update
         update();
     }
@@ -67,14 +64,12 @@ void OpenGLWidget::initializeGL()
     glClearColor(0.9529411764705882, 0.9529411764705882, 0.9529411764705882, 1);
 
     initShaders();
-    initTextures();
 
     glEnable(GL_DEPTH_TEST);
 
     //glEnable(GL_CULL_FACE);
 
     startTimer(12);
-    //	timer.start(12, this);
 }
 void OpenGLWidget::initShaders()
 {
@@ -96,13 +91,6 @@ void OpenGLWidget::initShaders()
         close();
     }
 }
-void OpenGLWidget::initTextures()
-{
-    texture = new QOpenGLTexture(QImage(":/Images/cube.png").mirrored());
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    texture->setMagnificationFilter(QOpenGLTexture::Linear);
-    texture->setWrapMode(QOpenGLTexture::Repeat);
-}
 
 void OpenGLWidget::resizeGL(int w, int h)
 {
@@ -114,7 +102,6 @@ void OpenGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     g_camera.bind(&program);
-
     for (auto&& mesh : g_sceneManager.m_meshs) {
         mesh.draw(&program);
     }

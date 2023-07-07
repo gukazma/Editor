@@ -23,4 +23,10 @@ void Camera::resize(qreal w, qreal h) {
     m_projectMatrix.perspective(m_fov, m_aspect, m_zNear, m_zFar);
 }
 
+void Camera::rotate(const QQuaternion& rotate) {
+    m_viewMatrix.setToIdentity();
+    m_viewMatrix.translate(m_position);
+    m_viewMatrix.rotate(rotate);
+}
+
 
