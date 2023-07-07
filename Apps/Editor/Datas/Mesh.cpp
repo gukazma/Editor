@@ -54,5 +54,4 @@ void soarscape::Mesh::initRenderData() {
 
 void soarscape::Mesh::read(const boost::filesystem::path& path_) {
     CGAL::read_mesh(*this, path_.generic_string());
-    initRenderData();
 }
