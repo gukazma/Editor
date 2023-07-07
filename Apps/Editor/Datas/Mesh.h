@@ -19,7 +19,7 @@ public:
     Mesh();
     ~Mesh();
     void draw(QOpenGLShaderProgram* VPMatrix_);
-    void initRenderData();
+    void updateRenderData();
     void read(const boost::filesystem::path& );
 
 private:

@@ -20,5 +20,5 @@ void SceneManager::slot_openMesh(const boost::filesystem::path& path_)
     };
     ProgressBar progressBar(fnc);
     progressBar.exec();
-    mesh.initRenderData();
+    mesh.updateRenderData();
 }

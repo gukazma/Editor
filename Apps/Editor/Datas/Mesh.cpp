@@ -30,7 +30,7 @@ void soarscape::Mesh::draw(QOpenGLShaderProgram* program) {
     glDrawElements(GL_TRIANGLES, number_of_faces()*3, GL_UNSIGNED_SHORT, 0);
 }
 
-void soarscape::Mesh::initRenderData() {
+void soarscape::Mesh::updateRenderData() {
     std::vector<VertexData> vertices;
     std::vector<GLushort>   indices;
     for (auto&& p : points()) {
