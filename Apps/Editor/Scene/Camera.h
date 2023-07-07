@@ -11,11 +11,14 @@ public:
     void bind(QOpenGLShaderProgram* program);
     void resize(qreal w, qreal h);
     void rotate(const QQuaternion& rotate);
+    void moveForward(qreal distance = 1.0);
 
 private:
     QVector3D  m_focalPoint    = {0, 0, 0};
     QVector3D  m_position    = {0, 0, 0};
     qreal  m_focalDistance = 5.0;
+    qreal      m_maxDistance   = 50.0;
+    qreal      m_maxSpeed      = 1.0;
     QMatrix4x4 m_projectMatrix;
     QMatrix4x4 m_viewMatrix;
     qreal m_aspect = 0;

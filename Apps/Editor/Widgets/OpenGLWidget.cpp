@@ -39,23 +39,32 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent* e)
 
     // Increase angular speed
     angularSpeed += acc;
+    rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
+    g_camera.rotate(rotation);
+    update();
 }
+
+void OpenGLWidget::wheelEvent(QWheelEvent* e) {
+    auto delta = e->delta();
+    g_camera.moveForward(delta);
+    update();
+}
+
+
 void OpenGLWidget::timerEvent(QTimerEvent*)
 {
-    // Decrease angular speed (friction)
-    angularSpeed *= 0.99;
+    //// Decrease angular speed (friction)
+    //angularSpeed *= 0.99;
 
-    // Stop rotation when speed goes below threshold
-    if (angularSpeed < 0.01) {
-        angularSpeed = 0.0;
-    }
-    else {
-        // Update rotation
-        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
-        g_camera.rotate(rotation);
-        // Request an update
-        update();
-    }
+    //// Stop rotation when speed goes below threshold
+    //if (angularSpeed < 0.01) {
+    //    angularSpeed = 0.0;
+    //}
+    //else {
+    //    // Update rotation
+    //    
+    //    // Request an update
+    //}
 }
 void OpenGLWidget::initializeGL()
 {

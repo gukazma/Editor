@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <QOpenGLShaderProgram>
+#include <algorithm>
 Camera g_camera;
 Camera::Camera(qreal fov, qreal aspect, qreal zNear, qreal zFar)
 {
@@ -14,6 +15,8 @@ Camera::Camera(qreal fov, qreal aspect, qreal zNear, qreal zFar)
 Camera::~Camera() {}
 
 void Camera::bind(QOpenGLShaderProgram* program) {
+    m_viewMatrix.setToIdentity();
+    m_viewMatrix.lookAt(m_position, m_focalPoint, QVector3D(0.0, 1.0, 0.0));
     program->setUniformValue("mvp_matrix", m_projectMatrix * m_viewMatrix);
 }
 
@@ -24,9 +27,21 @@ void Camera::resize(qreal w, qreal h) {
 }
 
 void Camera::rotate(const QQuaternion& rotate) {
-    m_viewMatrix.setToIdentity();
-    m_viewMatrix.translate(m_position);
-    m_viewMatrix.rotate(rotate);
+    QMatrix4x4 rotateMatrix;
+    rotateMatrix.setToIdentity();
+    rotateMatrix.rotate(rotate);
+    m_position = rotateMatrix * m_position;
+}
+
+void Camera::moveForward(qreal delta) {
+
+    QVector3D forward = m_focalPoint - m_position;
+    if (forward.length() > m_maxDistance) {
+        delta=-delta;
+    }
+    float     normalizedDistance = forward.length() / m_maxDistance;   // 将距离归一化到 0-1 范围内
+    float     speed = (1 - normalizedDistance) * m_maxSpeed;   // 根据归一化距离计算速度
+    m_position -= forward.normalized() * delta / std::abs(delta) * speed;
 }
 
 
