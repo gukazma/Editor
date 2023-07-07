@@ -5,6 +5,7 @@
 #include <QTime>
 #include <QtMath>
 #include "Scene/SceneManager.h"
+#include "Scene/Camera.h"
 OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
     , cube(0)
@@ -105,36 +106,18 @@ void OpenGLWidget::initTextures()
 
 void OpenGLWidget::resizeGL(int w, int h)
 {
-    // Calculate aspect ratio
-    qreal aspect = qreal(w) / qreal(h ? h : 1);
-
-    // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 0.1, zFar = 100.0, fov = 45.0;
-
-    // Reset projection
-    projection.setToIdentity();
-    // Set perspective projection
-    projection.perspective(fov, aspect, zNear, zFar);
+    g_camera.resize(w, h);
 }
 
 void OpenGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    texture->bind();
-
-    QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -1.0);
-    matrix.rotate(rotation);
-
-    program.setUniformValue("mvp_matrix", projection * matrix);
-
-    program.setUniformValue("texture", 0);
+    g_camera.bind(&program);
 
     for (auto&& mesh : g_sceneManager.m_meshs) {
         mesh.draw(&program);
     }
-
     calcFPS();
     paintFPS();
 }
