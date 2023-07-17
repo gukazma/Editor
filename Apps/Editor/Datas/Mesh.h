@@ -8,7 +8,7 @@
 #include <fstream>
 #include <boost/filesystem/path.hpp>
 namespace soarscape {
-class Mesh : public SurfaceMesh, protected QOpenGLFunctions
+class Mesh :  protected QOpenGLFunctions
 {
 public:
     struct VertexData
@@ -25,5 +25,6 @@ public:
 private:
     QOpenGLBuffer m_arrayBuf;
     QOpenGLBuffer m_indexBuf;
+    SurfaceMesh   m_mesh;
 };
 }   // namespace soarscape
