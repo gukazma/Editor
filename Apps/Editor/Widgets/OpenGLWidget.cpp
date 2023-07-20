@@ -1,11 +1,13 @@
 #include "OpenGLWidget.h"
-
 #include <QMouseEvent>
 #include <QPainter>
 #include <QTime>
 #include <QtMath>
 #include "Scene/SceneManager.h"
 #include "Scene/Camera.h"
+
+#define GLEW_STATIC     
+
 OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget(parent)
     , angularSpeed(0)
@@ -19,64 +21,94 @@ OpenGLWidget::~OpenGLWidget()
 }
 void OpenGLWidget::mousePressEvent(QMouseEvent* e)
 {
-    // Save mouse press position
-    mousePressPosition = QVector2D(e->localPos());
+    if (e->button() == Qt::RightButton) {
+        isRightMousePress  = GL_TRUE;
+        update();
+    }
+    if (e->button() == Qt::LeftButton) {
+        m_lastPoint1        = QVector2D(e->localPos());
+        mousePressPosition = QVector2D(e->localPos());
+        isLeftMousePress   = GL_TRUE;
+        update();
+    }
+    m_lastPoint = QVector2D(e->localPos());
 }
 void OpenGLWidget::mouseReleaseEvent(QMouseEvent* e)
 {
-    // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    if (e->button() == Qt::LeftButton || e->button() == Qt::RightButton) {
+        if (e->button() == Qt::RightButton) {
+            isRightMousePress = GL_FALSE;
+        }
+        if (e->button() == Qt::LeftButton) {
+            isLeftMousePress = GL_FALSE;
+        }
+    }
+}
 
-    // Rotation axis is perpendicular to the mouse position difference
-    // vector
-    QVector3D n = QVector3D(diff.y(), diff.x(), 0.0).normalized();
-
-    // Accelerate angular speed relative to the length of the mouse sweep
-    qreal acc = diff.length() / 100.0;
-
-    // Calculate new rotation axis as weighted sum
-    rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
-
-    // Increase angular speed
-    angularSpeed += acc;
-    rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
-    g_camera.rotate(rotation);
+void OpenGLWidget::mouseMoveEvent(QMouseEvent* e)
+{
+    if (isRightMousePress) {
+        LineMove(m_lastPoint, QVector2D(e->localPos()));
+    }
+    if (isLeftMousePress) {
+        QVector2D diff   = QVector2D(e->localPos()) - m_lastPoint1;
+        QVector3D n    = QVector3D(diff.y(), diff.x(), 0.0).normalized();
+        qreal     acc  = diff.length() / 80.0;
+        m_rotationAxis   = (m_rotationAxis * angularSpeed + n * acc).normalized();
+        angularSpeed += acc;
+    }
+    m_lastPoint = QVector2D(e->localPos());
     update();
 }
 
-void OpenGLWidget::wheelEvent(QWheelEvent* e) {
-    auto delta = e->delta();
-    g_camera.moveForward(delta);
+void OpenGLWidget::LineMove(QVector2D posOrgin, QVector2D posEnd)
+{
+    float ratio   = 0.003f * sqrt(width() * height());
+    float xoffset = posEnd.x() - posOrgin.x();
+    float yoffset = posEnd.y() - posOrgin.y();
+
+    m_lineMove.setX(m_lineMove.x() + xoffset * ratio);
+    m_lineMove.setY(m_lineMove.y() - yoffset * ratio);
+}
+void OpenGLWidget::wheelEvent(QWheelEvent* e)
+{
+    int   offset = e->angleDelta().y() < 0 ? -1 : 1;
+    qreal speed  = 0.9;
+    //if (0 <= m_aspect + offset * speed && m_aspect + offset * speed <= 50) {
+    //    m_aspect = m_aspect + offset * speed;
+    //}
+    m_aspect = m_aspect + offset * speed;
+    if (m_aspect < 1) m_aspect = 1;
+    e->accept();
     update();
 }
-
-
 void OpenGLWidget::timerEvent(QTimerEvent*)
 {
-    //// Decrease angular speed (friction)
-    //angularSpeed *= 0.99;
+    // Decrease angular speed (friction)
+    angularSpeed *= 0.50;
 
-    //// Stop rotation when speed goes below threshold
-    //if (angularSpeed < 0.01) {
-    //    angularSpeed = 0.0;
-    //}
-    //else {
-    //    // Update rotation
-    //    
-    //    // Request an update
-    //}
+    // Stop m_rotation when speed goes below threshold
+    if (angularSpeed < 0.01) {
+        angularSpeed = 0.0;
+    }
+    else {
+        // Update m_rotation
+        m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, angularSpeed) * m_rotation;
+        // Request an update
+        
+        update();
+    }
 }
 void OpenGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
-
-    glClearColor(0.9529411764705882, 0.9529411764705882, 0.9529411764705882, 1);
-
+    glClearColor(0.9, 0.9, 0.9, 0);
     initShaders();
 
     glEnable(GL_DEPTH_TEST);
-
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity(); 
 
     startTimer(12);
 }
@@ -103,15 +135,31 @@ void OpenGLWidget::initShaders()
 
 void OpenGLWidget::resizeGL(int w, int h)
 {
-    g_camera.resize(w, h);
+    //g_camera.resize(w, h);
+    qreal aspect = qreal(w) / qreal(h ? h : 1);
+    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    m_projection.setToIdentity();
+    m_projection.perspective(fov, aspect, zNear, zFar);
 }
 
 void OpenGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     g_camera.bind(&program);
     for (auto&& mesh : g_sceneManager.m_meshs) {
+        m_projection.setToIdentity();
+        m_projection.perspective(45.0, width() / height(), c_near, c_far);
+
+        QMatrix4x4 matrix;
+        matrix.translate(0.0, 0.0, -10.0);
+        matrix.rotate(m_rotation);
+        matrix.scale(m_aspect);
+
+        matrixView = QMatrix4x4();
+        matrixView.lookAt(QVector3D(0, 0, 0), QVector3D(0.0, 0.0, -1), QVector3D(0.0, 1.0, 0.0));
+        matrixView.translate(m_lineMove.x()/1000, m_lineMove.y()/1000, m_lineMove.z());
+
+        program.setUniformValue("mvp_matrix", m_projection * matrixView * matrix);
         mesh.draw(&program);
     }
     calcFPS();

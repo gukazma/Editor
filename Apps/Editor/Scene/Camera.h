@@ -13,7 +13,7 @@ public:
     void rotate(const QQuaternion& rotate);
     void moveForward(qreal distance = 1.0);
 
-private:
+public:
     QVector3D  m_focalPoint    = {0, 0, 0};
     QVector3D  m_position    = {0, 0, 0};
     qreal  m_focalDistance = 5.0;

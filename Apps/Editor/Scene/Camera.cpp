@@ -1,12 +1,14 @@
 #include "Camera.h"
 #include <QOpenGLShaderProgram>
 #include <algorithm>
+#define GLEW_STATIC     
+
 Camera g_camera;
+#define PI 3.14159
 Camera::Camera(qreal fov, qreal aspect, qreal zNear, qreal zFar)
 {
     m_projectMatrix.setToIdentity();
     m_projectMatrix.perspective(fov, aspect, zNear, zFar);
-
     m_viewMatrix.setToIdentity();
     m_position = m_focalPoint - QVector3D(0.0, 0.0, m_focalDistance);
     m_viewMatrix.translate(m_position);
@@ -34,14 +36,14 @@ void Camera::rotate(const QQuaternion& rotate) {
 }
 
 void Camera::moveForward(qreal delta) {
-
     QVector3D forward = m_focalPoint - m_position;
-    if (forward.length() > m_maxDistance) {
-        delta=-delta;
-    }
-    float     normalizedDistance = forward.length() / m_maxDistance;   // 将距离归一化到 0-1 范围内
+    //if (forward.length() > m_maxDistance) {
+    //    delta=-delta;
+    //}
+    float normalizedDistance = forward.length() / m_maxDistance;   // 将距离归一化到 0-1 范围内
     float     speed = (1 - normalizedDistance) * m_maxSpeed;   // 根据归一化距离计算速度
-    m_position -= forward.normalized() * delta / std::abs(delta) * speed;
-}
+    m_position += forward.normalized() * delta / std::abs(delta) * speed;
+    //m_position = 180.0 / PI * (atan(0.1 * delta) + 0.5 * PI);
 
+}
 

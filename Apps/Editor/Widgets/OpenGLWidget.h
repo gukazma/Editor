@@ -9,8 +9,8 @@
 #include <QOpenGLWidget>
 #include <QQuaternion>
 #include <QVector2D>
-
-class Cube;
+#include <QMatrix4x4>
+#include <QPoint>
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -20,6 +20,7 @@ public:
     ~OpenGLWidget();
 
 protected:
+    void mouseMoveEvent(QMouseEvent* e) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent* e) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent* e) Q_DECL_OVERRIDE;
     void wheelEvent(QWheelEvent* e) Q_DECL_OVERRIDE;
@@ -30,6 +31,7 @@ protected:
     void resizeGL(int w, int h) Q_DECL_OVERRIDE;
 
     void initShaders();
+    void LineMove(QVector2D posOrgin, QVector2D posEnd);
 
 private:
     void calcFPS();
@@ -37,14 +39,26 @@ private:
     void paintFPS();
 
 private:
+    GLboolean            isRightMousePress = GL_FALSE;
+    GLboolean            isLeftMousePress  = GL_FALSE;
+
     QBasicTimer          timer;
     QOpenGLShaderProgram program;
-
-    QVector2D   mousePressPosition;
-    QVector3D   rotationAxis;
+    QMatrix4x4           m_projection;
+    QVector3D   m_rotationAxis;
     qreal       angularSpeed;
-    QQuaternion rotation;
+    QQuaternion m_rotation;
     qreal       fps;
+    QVector2D            mousePressPosition;
+
+    qreal       m_aspect = 10;
+    const float c_near   = 0.1f;
+    const float c_far    = 100.0f;
+
+    QMatrix4x4 matrixView;
+    QVector3D m_lineMove = {0.0, 0.0, -3.0};
+    QVector2D m_lastPoint;
+    QVector2D  m_lastPoint1;
 };
 
 #endif   // WINDOW_H
