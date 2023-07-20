@@ -18,7 +18,7 @@
  * 
  * 
 -->
-# Cpp Template Project
+# Editor
 
 ## Optional dependencies
 [llvm-project](https://github.com/llvm/llvm-project/releases)
