@@ -24,9 +24,13 @@ void soarscape::Mesh::draw(QOpenGLShaderProgram* program) {
     quintptr offset = 0;
 
     // Tell OpenGL programmable pipeline how to locate vertex position data
-    int vertexLocation = program->attributeLocation("a_position");
+    int vertexLocation = program->attributeLocation("a_Position");
     program->enableAttributeArray(vertexLocation);
-    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(QVector3D) * 2);
+
+    vertexLocation = program->attributeLocation("in_Normal");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, sizeof(QVector3D), 3, sizeof(QVector3D) * 2);
 
     glDrawElements(GL_TRIANGLES, m_mesh.number_of_faces() * 3, GL_UNSIGNED_SHORT, 0);
 }
@@ -34,10 +38,19 @@ void soarscape::Mesh::draw(QOpenGLShaderProgram* program) {
 void soarscape::Mesh::updateRenderData() {
     std::vector<VertexData> vertices;
     std::vector<GLushort>   indices;
+    std::vector<Kernel::Vector_3> normals;
+    auto normal_map = m_mesh.property_map<SurfaceMesh::Vertex_index, Kernel::Vector_3>("v:normals").first;
+    for (auto v : m_mesh.vertices()) {
+        auto n = normal_map[v];
+        normals.push_back(n);
+    }
+    int i = 0;
     for (auto&& p : m_mesh.points()) {
         VertexData vertex;
         vertex.position = {p.x(), p.y(), p.z()};
+        vertex.normal   = {normals[i].x(), normals[i].y(), normals[i].z()};
         vertices.push_back(vertex);
+        i++;
     }
 
     for (auto&& f : m_mesh.faces()) {

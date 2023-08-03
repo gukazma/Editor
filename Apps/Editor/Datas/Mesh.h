@@ -14,6 +14,8 @@ public:
     struct VertexData
     {
         QVector3D position;
+        QVector3D normal;
+
     };
 
     Mesh();

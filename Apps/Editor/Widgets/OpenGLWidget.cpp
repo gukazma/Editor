@@ -33,6 +33,7 @@ void OpenGLWidget::mousePressEvent(QMouseEvent* e)
     }
     m_lastPoint = QVector2D(e->localPos());
 }
+
 void OpenGLWidget::mouseReleaseEvent(QMouseEvent* e)
 {
     if (e->button() == Qt::LeftButton || e->button() == Qt::RightButton) {
@@ -40,7 +41,7 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent* e)
             isRightMousePress = GL_FALSE;
         }
         if (e->button() == Qt::LeftButton) {
-            isLeftMousePress = GL_FALSE;
+            isLeftMousePress = GL_FALSE;  
         }
     }
 }
@@ -107,8 +108,6 @@ void OpenGLWidget::initializeGL()
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity(); 
 
     startTimer(12);
 }
@@ -160,6 +159,8 @@ void OpenGLWidget::paintGL()
         matrixView.translate(m_lineMove.x()/1000, m_lineMove.y()/1000, m_lineMove.z());
 
         program.setUniformValue("mvp_matrix", m_projection * matrixView * matrix);
+        program.setUniformValue("u_LightPos", QVector3D(1.0f, 1.0f, 1.0f));
+        program.setUniformValue("u_LightPos1", QVector3D(-1.0f, 1.0f, -1.0f));
         mesh.draw(&program);
     }
     calcFPS();
@@ -191,3 +192,4 @@ void OpenGLWidget::paintFPS()
     //    QString str = QString("FPS:%1").arg(QString::number(fps, 'f', 3));
     //    this->setWindowTitle(str);
 }
+
