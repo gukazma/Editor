@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include <fstream>
 #include <Widgets/ProgressBar.h>
+#include <iostream>
 SceneManager g_sceneManager;
 SceneManager::SceneManager(QObject* parent) {}
 
