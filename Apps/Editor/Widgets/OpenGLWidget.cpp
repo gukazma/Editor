@@ -70,17 +70,6 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent* e)
             int    y1            = rubberBand->geometry().y();
             int    y2            = rubberBand->geometry().y() + rubberBand->geometry().height();
             selectedRect.normalized();
-
-            auto&& mesh         = g_sceneManager.m_meshs[0];
-            auto&& m_mesh       = mesh.m_mesh;
-                // 遍历点云集合，判断每个点是否在选择框内部
-            for (auto& point : m_mesh.points()) {
-                float f1=point.x(), f2=point.y(), f3=point.z();
-                //if (selectedRect.contains(Point)) {
-                //    // 将符合条件的点进行处理
-                //    vertices.push_back(Point);
-                //}
-            }
         }
 
     }

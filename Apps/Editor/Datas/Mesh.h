@@ -27,7 +27,6 @@ public:
     void draw(QOpenGLShaderProgram* VPMatrix_);
     void updateRenderData();
     void read(const boost::filesystem::path& );
-    SurfaceMesh m_mesh;
 
 private:
     QOpenGLBuffer m_arrayBuf;
