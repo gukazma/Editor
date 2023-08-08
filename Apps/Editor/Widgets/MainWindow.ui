@@ -112,6 +112,9 @@
    </property>
   </action>
   <action name="actionSelectFace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../Resources/resources.qrc">
      <normaloff>:/Icons/selectface.png</normaloff>:/Icons/selectface.png</iconset>

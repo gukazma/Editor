@@ -23,10 +23,11 @@ public:
     void draw(QOpenGLShaderProgram* VPMatrix_);
     void updateRenderData();
     void read(const boost::filesystem::path& );
+    SurfaceMesh m_mesh;
 
 private:
     QOpenGLBuffer m_arrayBuf;
     QOpenGLBuffer m_indexBuf;
-    SurfaceMesh   m_mesh;
+    
 };
 }   // namespace soarscape

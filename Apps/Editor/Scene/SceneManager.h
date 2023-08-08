@@ -14,6 +14,15 @@ public:
     ~SceneManager();
 
     std::vector<::soarscape::Mesh> m_meshs;
+
+    class EditorStatement
+    {
+    public:
+        static bool  s_CurrentState;
+        static void  SetCurrentState(bool state);
+        static bool  GetCurrentState();
+    };
+
 public slots:
     void slot_openMesh(const boost::filesystem::path&);
 };
