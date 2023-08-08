@@ -7,6 +7,10 @@
 #include <QVector3D>
 #include <fstream>
 #include <boost/filesystem/path.hpp>
+#include <memory>
+namespace Editor {
+class Mesh;
+}
 namespace soarscape {
 class Mesh :  protected QOpenGLFunctions
 {
@@ -17,7 +21,7 @@ public:
         QVector3D normal;
 
     };
-
+    using Vec3f = std::array<float, 3>;
     Mesh();
     ~Mesh();
     void draw(QOpenGLShaderProgram* VPMatrix_);
@@ -28,6 +32,7 @@ public:
 private:
     QOpenGLBuffer m_arrayBuf;
     QOpenGLBuffer m_indexBuf;
-    
+    std::shared_ptr<Editor::Mesh> m_mesh;
+    size_t                        m_indiceSize;
 };
 }   // namespace soarscape

@@ -148,7 +148,7 @@ void OpenGLWidget::timerEvent(QTimerEvent*)
 void OpenGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
-    glClearColor(0.9, 0.9, 0.9, 0);
+    glClearColor(0.9529411764705882, 0.9529411764705882, 0.9529411764705882, 1);
     initShaders();
 
     glEnable(GL_DEPTH_TEST);
