@@ -3,12 +3,12 @@ set(TARGET_NAME "EditorMesh")
 file(GLOB_RECURSE HEADER_FILES "*.h")
 file(GLOB_RECURSE HPP_FILES "*.hpp")
 file(GLOB_RECURSE CPP_FILES "*.cpp")
-set(CMAKE_MODULE_PATH "D:/ThirdParty/cmake" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "$ENV{THIRDPARTY}/cmake" ${CMAKE_MODULE_PATH})
 
-find_package(OpenSceneGraph 2.0.0 REQUIRED osgViewer osgDB osgUtil osgQt5 osgGA)
+find_package(OpenSceneGraph 2.0.0 REQUIRED osgViewer osgDB osgUtil osgGA)
 find_package(VCG REQUIRED)
 find_package(Boost COMPONENTS filesystem system thread REQUIRED)
-find_package(Eigen3 REQUIRED HINTS "D:/ThirdParty/Eigen3")
+find_package(Eigen3 REQUIRED HINTS "$ENV{THIRDPARTY}/Eigen3")
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${HEADER_FILES} ${HPP_FILES} ${CPP_FILES})
 
