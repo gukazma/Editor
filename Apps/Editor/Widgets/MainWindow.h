@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QRubberBand>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ private:
 
 private slots:
     void on_actionImportMesh_triggered();
+    void on_actionSelectFace_triggered();
 
 private:
     Ui::MainWindow *ui;

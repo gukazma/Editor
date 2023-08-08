@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QTime>
 #include <QtMath>
+#include <QGridLayout>
 #include "Scene/SceneManager.h"
 #include "Scene/Camera.h"
 
@@ -13,53 +14,86 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
     , angularSpeed(0)
 {
     fps = 60.0;
+    rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+
 }
 OpenGLWidget::~OpenGLWidget()
 {
     makeCurrent();
     doneCurrent();
+    delete rubberBand;
+
 }
 void OpenGLWidget::mousePressEvent(QMouseEvent* e)
 {
-    if (e->button() == Qt::RightButton) {
-        isRightMousePress  = GL_TRUE;
-        update();
+    if (SceneManager::EditorStatement::GetCurrentState() == false) {
+        if (e->button() == Qt::RightButton) {
+            isRightMousePress = GL_TRUE;
+            update();
+        }
+        if (e->button() == Qt::LeftButton) {
+            m_lastPoint1       = QVector2D(e->localPos());
+            mousePressPosition = QVector2D(e->localPos());
+            isLeftMousePress   = GL_TRUE;
+            update();
+        }
+        m_lastPoint = QVector2D(e->localPos());
     }
-    if (e->button() == Qt::LeftButton) {
-        m_lastPoint1        = QVector2D(e->localPos());
-        mousePressPosition = QVector2D(e->localPos());
-        isLeftMousePress   = GL_TRUE;
-        update();
+    else {
+        if (e->button() == Qt::LeftButton) {
+            origin = e->pos();
+            rubberBand->setGeometry(QRect(origin, QSize()));
+            rubberBand->show();
+        }
     }
-    m_lastPoint = QVector2D(e->localPos());
 }
 
 void OpenGLWidget::mouseReleaseEvent(QMouseEvent* e)
 {
-    if (e->button() == Qt::LeftButton || e->button() == Qt::RightButton) {
-        if (e->button() == Qt::RightButton) {
-            isRightMousePress = GL_FALSE;
+    std::vector<QPoint> vertices;
+    if (SceneManager::EditorStatement::GetCurrentState() == false) {
+        if (e->button() == Qt::LeftButton || e->button() == Qt::RightButton) {
+            if (e->button() == Qt::RightButton) {
+                isRightMousePress = GL_FALSE;
+            }
+            if (e->button() == Qt::LeftButton) {
+                isLeftMousePress = GL_FALSE;
+            }
         }
-        if (e->button() == Qt::LeftButton) {
-            isLeftMousePress = GL_FALSE;  
+    }
+    else {
+        //rubberBand->hide();
+        if (e->button() == Qt::LeftButton && rubberBand) {
+            QRect selectedRect = rubberBand->geometry();
+            int    x1            = rubberBand->geometry().x();
+            int    x2           = rubberBand->geometry().x()+rubberBand->geometry().width();
+            int    y1            = rubberBand->geometry().y();
+            int    y2            = rubberBand->geometry().y() + rubberBand->geometry().height();
+            selectedRect.normalized();
         }
+
     }
 }
 
 void OpenGLWidget::mouseMoveEvent(QMouseEvent* e)
 {
-    if (isRightMousePress) {
-        LineMove(m_lastPoint, QVector2D(e->localPos()));
+    if (SceneManager::EditorStatement::GetCurrentState() == false) {
+        if (isRightMousePress) {
+            LineMove(m_lastPoint, QVector2D(e->localPos()));
+        }
+        if (isLeftMousePress) {
+            QVector2D diff = QVector2D(e->localPos()) - m_lastPoint1;
+            QVector3D n    = QVector3D(diff.y(), diff.x(), 0.0).normalized();
+            qreal     acc  = diff.length() / 80.0;
+            m_rotationAxis = (m_rotationAxis * angularSpeed + n * acc).normalized();
+            angularSpeed += acc;
+        }
+        m_lastPoint = QVector2D(e->localPos());
+        update();
     }
-    if (isLeftMousePress) {
-        QVector2D diff   = QVector2D(e->localPos()) - m_lastPoint1;
-        QVector3D n    = QVector3D(diff.y(), diff.x(), 0.0).normalized();
-        qreal     acc  = diff.length() / 80.0;
-        m_rotationAxis   = (m_rotationAxis * angularSpeed + n * acc).normalized();
-        angularSpeed += acc;
+    else {
+        rubberBand->setGeometry(QRect(origin, e->pos()).normalized());
     }
-    m_lastPoint = QVector2D(e->localPos());
-    update();
 }
 
 void OpenGLWidget::LineMove(QVector2D posOrgin, QVector2D posEnd)

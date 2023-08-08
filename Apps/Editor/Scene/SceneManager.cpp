@@ -23,3 +23,15 @@ void SceneManager::slot_openMesh(const boost::filesystem::path& path_)
     progressBar.exec();
     mesh.updateRenderData();
 }
+
+bool SceneManager::EditorStatement::s_CurrentState = false;
+
+void SceneManager::EditorStatement::SetCurrentState(bool state)
+{
+    s_CurrentState = state;
+}
+
+bool SceneManager::EditorStatement::GetCurrentState()
+{
+    return s_CurrentState;
+}

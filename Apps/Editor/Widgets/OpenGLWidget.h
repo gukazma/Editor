@@ -11,6 +11,8 @@
 #include <QVector2D>
 #include <QMatrix4x4>
 #include <QPoint>
+#include <QRubberBand>
+#include <QCheckBox>
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -59,6 +61,9 @@ private:
     QVector3D m_lineMove = {0.0, 0.0, -3.0};
     QVector2D m_lastPoint;
     QVector2D  m_lastPoint1;
+
+    QRubberBand* rubberBand;
+    QPoint       origin;
 };
 
 #endif   // WINDOW_H
