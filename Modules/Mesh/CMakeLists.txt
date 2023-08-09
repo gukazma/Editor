@@ -20,6 +20,7 @@ set_target_properties(${TARGET_NAME} PROPERTIES FOLDER Modules)
 
 # being a cross-platform target, we enforce standards conformance on MSVC
 target_compile_options(${TARGET_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/WX->")
+target_compile_options(${TARGET_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/bigobj>")
 
 # Link dependencies    
 target_link_libraries(${TARGET_NAME} 

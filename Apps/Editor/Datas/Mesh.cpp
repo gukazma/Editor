@@ -32,15 +32,14 @@ void soarscape::Mesh::draw(QOpenGLShaderProgram* program) {
     program->enableAttributeArray(vertexLocation);
     program->setAttributeBuffer(vertexLocation, GL_FLOAT, sizeof(QVector3D), 3, sizeof(QVector3D) * 2);
 
-    glDrawElements(GL_TRIANGLES, m_indiceSize, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_SHORT, 0);
 }
 
 void soarscape::Mesh::updateRenderData() {
     if (!m_mesh) {
         return;
     }
-    std::vector<VertexData> r_vertices;
-    std::vector<GLushort>   r_indices;
+    
     std::vector<Vec3f>      vertices, normals;
     std::vector<size_t>     indices;
     
@@ -54,18 +53,17 @@ void soarscape::Mesh::updateRenderData() {
         auto       n = normals[i];
         v.position   = {p[0], p[1], p[2]};
         v.normal     = {n[0], n[1], n[2]};
-        r_vertices.push_back(v);
+        m_vertices.push_back(v);
     }
 
     for (size_t i = 0; i < indices.size(); i++) {
-        r_indices.push_back(indices[i]);
+        m_indices.push_back(indices[i]);
     }
 
     m_arrayBuf.bind();
     m_arrayBuf.allocate(vertices.data(), vertices.size()*sizeof(VertexData));
     m_indexBuf.bind();
     m_indexBuf.allocate(indices.data(), indices.size() * sizeof(GLushort));
-    m_indiceSize = r_indices.size();
 }
 
 void soarscape::Mesh::read(const boost::filesystem::path& path_) {

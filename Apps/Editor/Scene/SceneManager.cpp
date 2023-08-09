@@ -2,6 +2,7 @@
 #include <fstream>
 #include <Widgets/ProgressBar.h>
 #include <iostream>
+#include <memory>
 SceneManager g_sceneManager;
 SceneManager::SceneManager(QObject* parent) {}
 
@@ -9,11 +10,10 @@ SceneManager::~SceneManager() {}
 
 void SceneManager::slot_openMesh(const boost::filesystem::path& path_)
 {
-    soarscape::Mesh mesh;
-
+    std::shared_ptr<soarscape::Mesh> mesh = std::make_shared<soarscape::Mesh>();
     ProgressBar::ThreadFunction fnc = [&]() {
         std::cout << "loading " << path_.generic_string() << std::endl;
-        mesh.read(path_);
+        mesh->read(path_);
         m_meshs.push_back(mesh);
         g_progress_percentage = 100;
         g_done                = true;
@@ -21,7 +21,7 @@ void SceneManager::slot_openMesh(const boost::filesystem::path& path_)
     };
     ProgressBar progressBar(fnc);
     progressBar.exec();
-    mesh.updateRenderData();
+    mesh->updateRenderData();
 }
 
 bool SceneManager::EditorStatement::s_CurrentState = false;

@@ -7,8 +7,12 @@
 #include <vcg/complex/algorithms/local_optimization/tri_edge_collapse_quadric.h>
 #include <vcg/complex/algorithms/point_sampling.h>
 #include <wrap/io_trimesh/export.h>
+#include <wrap/io_trimesh/import.h>
 
 namespace Editor {
+void MeshImplBase::read(const boost::filesystem::path& path_) {
+    vcg::tri::io::Importer<MyMesh>::Open(m_nativeMesh, path_.generic_string().c_str());
+}
 void MeshImplBase::write(const boost::filesystem::path& path_)
 {
     vcg::tri::io::Exporter<MyMesh>::Save(m_nativeMesh, path_.generic_string().c_str());
@@ -76,6 +80,16 @@ void MeshImplBase::possionDiskSample(std::vector<Vec3f>& vertices, std::vector<V
         normals.push_back(n);
     }
 }
+void MeshImplBase::updateVIMap() {
+    int n = 0;
+    for (size_t i = 0; i < m_nativeMesh.vert.size(); i++) {
+        auto v = m_nativeMesh.vert[i];
+        if (v.IsD()) continue;
+        Vec3f p = {v.P()[0], v.P()[1], v.P()[2]};
+        vimap[p] = n;
+        n++;
+    }
+}
 void    MeshImplBase::getVertices(std::vector<Vec3f>& vertices) {
     for (size_t i = 0; i < m_nativeMesh.vert.size(); i++) {
         auto v = m_nativeMesh.vert[i];
@@ -96,22 +110,19 @@ void    MeshImplBase::getNormals(std::vector<Vec3f>& normals) {
     }
 }
 
-size_t MeshImplBase::findIndex(MyVertex& v_, std::vector<Vec3f>& vertices)
-{
-    for (size_t i = 0; i < vertices.size(); i++) {
-        Vec3f v = {v_.P()[0], v_.P()[1], v_.P()[2]};
-        if (v == vertices[i]) return i;
-    }
-}
 void    MeshImplBase::getIndices(std::vector<size_t>& indices) {
-    std::vector<Vec3f> vertices;
-    getVertices(vertices);
-    for (size_t i = 0; i < m_nativeMesh.face.size(); i++) {
+    updateVIMap();
+    indices.resize(m_nativeMesh.face.size()*3);
+
+    for (size_t i = 0; i < m_nativeMesh.face.size(); i+=3) {
         auto& face = m_nativeMesh.face[i];
         if (face.IsD()) continue;
-        indices.push_back(findIndex(*face.V(0), vertices));
-        indices.push_back(findIndex(*face.V(1), vertices));
-        indices.push_back(findIndex(*face.V(2), vertices));
+        Vec3f v0 = {face.V(0)->P()[0], face.V(0)->P()[1], face.V(0)->P()[2]};
+        Vec3f v1 = {face.V(1)->P()[0], face.V(1)->P()[1], face.V(1)->P()[2]};
+        Vec3f v2 = {face.V(2)->P()[0], face.V(2)->P()[1], face.V(2)->P()[2]};
+        indices[i] = vimap[v0];
+        indices[i+1] = vimap[v1];
+        indices[i+2] = vimap[v2];
     }
 }
 MyMesh& MeshImplBase::getNativeMesh()

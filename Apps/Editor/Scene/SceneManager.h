@@ -2,6 +2,7 @@
 #include <QObject>
 #include <boost/filesystem/path.hpp>
 #include <Datas/Mesh.h>
+#include <memory>
 namespace soarscape
 {
 class Mesh;
@@ -13,7 +14,7 @@ public:
     explicit SceneManager(QObject* parent = nullptr);
     ~SceneManager();
 
-    std::vector<::soarscape::Mesh> m_meshs;
+    std::vector<std::shared_ptr<::soarscape::Mesh>> m_meshs;
 
     class EditorStatement
     {

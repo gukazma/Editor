@@ -95,9 +95,15 @@ public:
 
 void OSGBMeshImpleMesh::read(const boost::filesystem::path& path_)
 {
-    auto            node = osgDB::readNodeFile(path_.generic_string().c_str());
-    OSGBMeshVisitor meshVisitor(m_nativeMesh);
-    node->accept(meshVisitor);
+    if (path_.extension() == ".osgb" || path_.extension() == ".osgt")
+    {
+        auto            node = osgDB::readNodeFile(path_.generic_string().c_str());
+        OSGBMeshVisitor meshVisitor(m_nativeMesh);
+        node->accept(meshVisitor);
+    }
+    else {
+        MeshImplBase::read(path_);
+    }
 }
 
 

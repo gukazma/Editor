@@ -32,6 +32,7 @@ private:
     QOpenGLBuffer m_arrayBuf;
     QOpenGLBuffer m_indexBuf;
     std::shared_ptr<Editor::Mesh> m_mesh;
-    size_t                        m_indiceSize;
+    std::vector<VertexData>       m_vertices;
+    std::vector<GLushort>         m_indices;
 };
 }   // namespace soarscape

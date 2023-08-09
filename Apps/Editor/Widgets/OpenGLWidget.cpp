@@ -195,7 +195,7 @@ void OpenGLWidget::paintGL()
         program.setUniformValue("mvp_matrix", m_projection * matrixView * matrix);
         program.setUniformValue("u_LightPos", QVector3D(1.0f, 1.0f, 1.0f));
         program.setUniformValue("u_LightPos1", QVector3D(-1.0f, 1.0f, -1.0f));
-        mesh.draw(&program);
+        mesh->draw(&program);
     }
     calcFPS();
     paintFPS();
