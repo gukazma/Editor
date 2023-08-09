@@ -8,7 +8,7 @@
 #include <vcg/complex/algorithms/point_sampling.h>
 #include <wrap/io_trimesh/export.h>
 #include <wrap/io_trimesh/import.h>
-
+#include <set>
 namespace Editor {
 void MeshImplBase::read(const boost::filesystem::path& path_) {
     vcg::tri::io::Importer<MyMesh>::Open(m_nativeMesh, path_.generic_string().c_str());
@@ -80,53 +80,43 @@ void MeshImplBase::possionDiskSample(std::vector<Vec3f>& vertices, std::vector<V
         normals.push_back(n);
     }
 }
-void MeshImplBase::updateVIMap() {
-    int n = 0;
-    for (size_t i = 0; i < m_nativeMesh.vert.size(); i++) {
-        auto v = m_nativeMesh.vert[i];
-        if (v.IsD()) continue;
-        Vec3f p = {v.P()[0], v.P()[1], v.P()[2]};
-        vimap[p] = n;
-        n++;
-    }
-}
-void    MeshImplBase::getVertices(std::vector<Vec3f>& vertices) {
-    for (size_t i = 0; i < m_nativeMesh.vert.size(); i++) {
-        auto v = m_nativeMesh.vert[i];
-        if (v.IsD()) continue;
-
-        Vec3f p = {v.P()[0], v.P()[1], v.P()[2]};
-        vertices.push_back(p);
-    }
-}
-void    MeshImplBase::getNormals(std::vector<Vec3f>& normals) {
-    vcg::tri::UpdateNormal<MyMesh>::PerVertex(m_nativeMesh);
-    for (size_t i = 0; i < m_nativeMesh.vert.size(); i++) {
-        auto v = m_nativeMesh.vert[i];
-        if (v.IsD()) continue;
-
-        Vec3f n = {v.N()[0], v.N()[1], v.N()[2]};
-        normals.push_back(n);
-    }
-}
-
-void    MeshImplBase::getIndices(std::vector<size_t>& indices) {
-    updateVIMap();
-    indices.resize(m_nativeMesh.face.size()*3);
-
-    for (size_t i = 0; i < m_nativeMesh.face.size(); i+=3) {
-        auto& face = m_nativeMesh.face[i];
-        if (face.IsD()) continue;
-        Vec3f v0 = {face.V(0)->P()[0], face.V(0)->P()[1], face.V(0)->P()[2]};
-        Vec3f v1 = {face.V(1)->P()[0], face.V(1)->P()[1], face.V(1)->P()[2]};
-        Vec3f v2 = {face.V(2)->P()[0], face.V(2)->P()[1], face.V(2)->P()[2]};
-        indices[i] = vimap[v0];
-        indices[i+1] = vimap[v1];
-        indices[i+2] = vimap[v2];
-    }
-}
 MyMesh& MeshImplBase::getNativeMesh()
 {
     return m_nativeMesh;
+}
+void MeshImplBase::updateData() {
+    std::set<Vec3f> vset;
+    std::unordered_map<Vec3f, size_t> vimap;
+    std::unordered_map<Vec3f, Vec3f>  vnmap;
+
+    for (size_t i = 0; i < m_nativeMesh.vert.size(); i++) {
+        auto& v = m_nativeMesh.vert[i];
+        if (v.IsD()) continue;
+
+        auto& p    = v.P();
+        auto& n    = v.N();
+        Vec3f vec3 = {p[0], p[1], p[2]};
+        Vec3f norm3 = {n[0], n[1], n[2]};
+        vset.insert(vec3);
+        vnmap[vec3] = norm3;
+    }
+    for (auto v : vset) {
+        vimap[v] = m_vertices.size();
+        m_vertices.push_back(v);
+        m_normals.push_back(vnmap[v]);
+    }
+    for (size_t i = 0; i < m_nativeMesh.face.size(); i++) {
+        auto& face = m_nativeMesh.face[i];
+        auto& p0   = face.V(0)->P();
+        auto& p1   = face.V(1)->P();
+        auto& p2   = face.V(2)->P();
+        Vec3f v0   = {p0[0], p0[1], p0[2]};
+        Vec3f v1   = {p1[0], p1[1], p1[2]};
+        Vec3f v2   = {p2[0], p2[1], p2[2]};
+
+        m_indices.push_back(vimap[v0]);
+        m_indices.push_back(vimap[v1]);
+        m_indices.push_back(vimap[v2]);
+    }
 }
 }   // namespace Editor

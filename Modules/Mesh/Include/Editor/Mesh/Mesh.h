@@ -21,10 +21,11 @@ public:
     void    simpilify(float percent_);
     void    possionDiskSample(std::vector<Vec3f>& vertices, std::vector<Vec3f>& normals,
                               float radius_);
-    void    getVertices(std::vector<Vec3f>& vertices);
-    void    getNormals(std::vector<Vec3f>& normals);
-    void    getIndices(std::vector<size_t>& indices);
+    void    updateData();
     MyMesh& getNativMesh();
+    std::vector<Vec3f>  m_vertices;
+    std::vector<Vec3f>  m_normals;
+    std::vector<size_t> m_indices;
 
 private:
     std::shared_ptr<MeshImplBase> m_meshImplement;

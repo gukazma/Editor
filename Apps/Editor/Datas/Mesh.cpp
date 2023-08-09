@@ -43,9 +43,10 @@ void soarscape::Mesh::updateRenderData() {
     std::vector<Vec3f>      vertices, normals;
     std::vector<size_t>     indices;
     
-    m_mesh->getVertices(vertices);
-    m_mesh->getNormals(normals);
-    m_mesh->getIndices(indices);
+    m_mesh->updateData();
+    vertices = m_mesh->m_vertices;
+    normals = m_mesh->m_normals;
+    indices = m_mesh->m_indices;
 
     for (size_t i = 0; i < vertices.size(); i++) {
         VertexData v;

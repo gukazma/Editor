@@ -1,7 +1,6 @@
 #pragma once
 #include <Editor/Mesh/Types.h>
 #include <boost/filesystem/path.hpp>
-#include <unordered_map>
 using Vec3f                                             = std::array<float, 3>;
 namespace std {
 template<> struct hash<Vec3f>
@@ -25,18 +24,16 @@ public:
     void         simpilify(float percent_);
     void         possionDiskSample(std::vector<Vec3f>& vertices, std::vector<Vec3f>& normals,
                                    float radius_);
-    void         updateVIMap();
-    void    getVertices(std::vector<Vec3f>& vertices);
-    void    getNormals(std::vector<Vec3f>& normals);
-    void    getIndices(std::vector<size_t>& indices);
-    MyMesh&      getNativeMesh();
-
-private:
-    //size_t findIndex(MyVertex& v_, std::vector<Vec3f>& vertices);
+    
+    MyMesh&     getNativeMesh();
+    void        updateData();
+    std::vector<Vec3f>  m_vertices;
+    std::vector<Vec3f>  m_normals;
+    std::vector<size_t> m_indices;
 
 protected:
     MyMesh m_nativeMesh;
-    std::unordered_map<Vec3f, size_t> vimap;
+    
 };
 }   // namespace Editor
 

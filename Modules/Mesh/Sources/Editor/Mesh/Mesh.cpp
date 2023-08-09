@@ -27,16 +27,12 @@ void Mesh::possionDiskSample(std::vector<Vec3f>& vertices, std::vector<Vec3f>& n
     m_meshImplement->possionDiskSample(vertices, normals, radius_);
 }
 
-void Mesh::getVertices(std::vector<Vec3f>& vertices) {
-    m_meshImplement->getVertices(vertices);
-}
-
-void Mesh::getNormals(std::vector<Vec3f>& normals) {
-    m_meshImplement->getNormals(normals);
-}
-
-void Mesh::getIndices(std::vector<size_t>& indices) {
-    m_meshImplement->getIndices(indices);
+void Mesh::updateData()
+{
+    m_meshImplement->updateData();
+    m_vertices = m_meshImplement->m_vertices;
+    m_normals = m_meshImplement->m_normals;
+    m_indices = m_meshImplement->m_indices;
 }
 
 
