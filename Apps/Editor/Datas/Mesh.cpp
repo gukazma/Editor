@@ -62,9 +62,9 @@ void soarscape::Mesh::updateRenderData() {
     }
 
     m_arrayBuf.bind();
-    m_arrayBuf.allocate(vertices.data(), vertices.size()*sizeof(VertexData));
+    m_arrayBuf.allocate(m_vertices.data(), m_vertices.size() * sizeof(VertexData));
     m_indexBuf.bind();
-    m_indexBuf.allocate(indices.data(), indices.size() * sizeof(GLushort));
+    m_indexBuf.allocate(m_indices.data(), m_indices.size() * sizeof(GLushort));
 }
 
 void soarscape::Mesh::read(const boost::filesystem::path& path_) {
